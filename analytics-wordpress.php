@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Analytics for WordPress — by Segment.io
+Plugin Name: Analytics for WordPress — by Segment.io - Modified by Izzo
 Plugin URI: https://segment.io/plugins/wordpress
 Description: The hassle-free way to integrate any analytics service into your WordPress site.
 Version: 1.0.12
@@ -8,6 +8,7 @@ License: GPLv2
 Author: Segment.io
 Author URI: https://segment.io
 Author Email: friends@segment.io
+GitHub Plugin URI: https://github.com/amizzo87/analytics-wordpress
 */
 
 class Segment_Analytics {
@@ -816,16 +817,18 @@ class Segment_Analytics_WordPress {
 		if ( $settings['track_posts'] ) {
 			// A post or a custom post. `is_single` also returns attachments, so
 			// we filter those out. The event name is based on the post's type,
-			// and is uppercased.
-			if ( is_single() && ! is_attachment() ) {
+			// and is uppercased. EDIT:  getting just FIRST category
+			if ( is_single() /*&& ! is_attachment()*/ ) {
 
 				if ( ! self::is_excluded_post_type() ) {
 					$categories = implode( ', ', wp_list_pluck( get_the_category( get_the_ID() ), 'name' ) );
+					$singleCategory = get_the_category( get_the_ID() );
 					$track = array(
 						'event'      => sprintf( __( 'Viewed %s', 'segment' ), ucfirst( get_post_type() ) ),
 						'properties' => array(
 							'title'      => single_post_title( '', false ),
-							'category'   => $categories
+							//'category'   => $categories
+							'category' => $singleCategory[0]->name
 						)
 					);
 				}
